@@ -1,4 +1,3 @@
-
 ;;A variable to store the current global count.
 (define-data-var global-count int 0)
 
