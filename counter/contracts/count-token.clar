@@ -48,10 +48,22 @@
 
 ;; Mint new tokens and send them to a recipient.
 ;; Only the contract deployer can perform this operation.
-(define-public (mint (amount uint) (recipient principal))
+(define-public (mint)
   (begin
-    (asserts! (is-eq tx-sender CONTRACT_OWNER) ERR_OWNER_ONLY)
-    (ft-mint? count-token amount recipient)
+    (asserts! (is-eq contract-caller .counter) ERR_OWNER_ONLY)
+    (ft-mint? count-token u1 tx-sender)
+  )
+)
+
+;; Burn new tokens and send them to a recipient.
+;; Only the contract deployer can perform this operation.
+(define-public (burn)
+  (begin
+    (asserts! (is-eq contract-caller .counter) ERR_OWNER_ONLY)
+    (if (> (unwrap-panic (get-balance tx-sender)) u0)
+        (ft-burn? count-token u1 tx-sender)
+        (stx-burn? u1000000 tx-sender)
+    ) 
   )
 )
 
